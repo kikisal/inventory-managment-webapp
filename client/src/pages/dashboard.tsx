@@ -151,12 +151,16 @@ export default function Dashboard() {
         <h2 className="text-lg font-semibold tracking-tight mb-4">Quick Actions</h2>
         <div className="flex flex-wrap gap-4">
           <AddItemDialog
-            onSubmit={(data) => addItemMutation.mutateAsync(data)}
+            onSubmit={async (data) => {
+              await addItemMutation.mutateAsync(data);
+            }}
             isPending={isPending}
           />
           <QuickAdjustDialog
             items={items}
-            onSubmit={(data) => adjustStockMutation.mutateAsync(data)}
+            onSubmit={async (data) => {
+              await adjustStockMutation.mutateAsync(data);
+            }}
             isPending={isPending}
           />
           <Button
@@ -184,9 +188,15 @@ export default function Dashboard() {
         <InventoryTable
           items={items}
           isLoading={isLoading}
-          onAdjustStock={(data) => adjustStockMutation.mutateAsync(data)}
-          onEditItem={(id, data) => editItemMutation.mutateAsync({ id, data })}
-          onDeleteItem={(id) => deleteItemMutation.mutateAsync(id)}
+          onAdjustStock={async (data) => {
+            await adjustStockMutation.mutateAsync(data);
+          }}
+          onEditItem={async (id, data) => {
+            await editItemMutation.mutateAsync({ id, data });
+          }}
+          onDeleteItem={async (id) => {
+            await deleteItemMutation.mutateAsync(id);
+          }}
           isPending={isPending}
         />
       </div>

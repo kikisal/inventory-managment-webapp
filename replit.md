@@ -1,121 +1,205 @@
 # Bar Inventory Management System
 
+A modern, responsive web application for managing bar and restaurant inventory with real-time stock tracking and alerts.
+
 ## Overview
 
-A modern, productivity-focused inventory management application designed for bars and restaurants. The system enables staff to track spirits, beer, wine, mixers, and garnishes with real-time stock monitoring, low stock alerts, and quick adjustment capabilities. Built with a design philosophy inspired by Linear, Vercel Dashboard, and Stripe Dashboard, prioritizing information density, scan-optimized layouts, and rapid data updates.
+This application provides a comprehensive inventory management solution designed specifically for bars and restaurants. It features a dark-mode optimized interface with intuitive controls for tracking spirits, beer, wine, mixers, and garnishes.
 
-## User Preferences
+## Project Structure
 
-Preferred communication style: Simple, everyday language.
-
-## System Architecture
-
-### Frontend Architecture
-
-**Framework**: React 18+ with TypeScript, using Vite as the build tool and development server
-
-**Routing**: Wouter for lightweight client-side routing (single-page application)
-
-**State Management**: 
-- TanStack Query (React Query) for server state management with automatic caching and invalidation
-- React Hook Form for form state with Zod validation via `@hookform/resolvers`
-
-**UI Component System**:
-- shadcn/ui component library (New York variant) with Radix UI primitives
-- Tailwind CSS for styling with custom design tokens
-- Class Variance Authority (CVA) for component variant management
-- Dark mode optimized with theme provider
-
-**Design Tokens**:
-- Typography: Inter font family from Google Fonts
-- Color system: CSS custom properties with HSL values for both light/dark themes
-- Spacing: Tailwind's scale-based system (units of 2, 4, 6, 8, 12)
-- Border radius: Custom values (lg: 9px, md: 6px, sm: 3px)
-
-**Key Design Patterns**:
-- Component composition using Radix UI slots
-- Controlled form inputs with validation feedback
-- Optimistic UI updates with query invalidation
-- Toast notifications for user feedback
-- Responsive grid layouts (mobile-first approach)
-
-### Backend Architecture
-
-**Runtime**: Node.js with Express.js web framework
-
-**API Design**: RESTful endpoints under `/api` prefix
-- GET `/api/inventory` - List all inventory items
-- GET `/api/inventory/:id` - Get single item
-- POST `/api/inventory` - Create new item
-- PUT `/api/inventory/:id` - Update existing item
-- DELETE `/api/inventory/:id` - Delete item
-- POST `/api/inventory/:id/adjust` - Adjust stock levels
-
-**Data Validation**: Zod schemas shared between frontend and backend via `shared/schema.ts`
-
-**Development Features**:
-- Request/response logging middleware
-- JSON body parsing with raw body preservation
-- Vite integration for HMR in development
-
-### Data Storage
-
-**Database**: PostgreSQL via Neon serverless driver (`@neondatabase/serverless`)
-
-**ORM**: Drizzle ORM with TypeScript schema definitions
-- Schema location: `shared/schema.ts`
-- Migration output: `./migrations`
-- Schema push via `drizzle-kit push`
-
-**Data Model**:
-```typescript
-inventoryItems table:
-- id: UUID (primary key, auto-generated)
-- name: text (required)
-- category: text (enum: Spirits, Beer, Wine, Mixers, Garnishes)
-- quantity: integer (default: 0)
-- unit: text (enum: ml, L, bottles, cases, units)
-- lowStockThreshold: integer (default: 10)
+```
+├── client/                 # Frontend React application
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   │   ├── ui/       # Shadcn UI components
+│   │   │   ├── theme-provider.tsx
+│   │   │   ├── theme-toggle.tsx
+│   │   │   ├── summary-cards.tsx
+│   │   │   ├── low-stock-alert.tsx
+│   │   │   ├── add-item-dialog.tsx
+│   │   │   ├── edit-item-dialog.tsx
+│   │   │   ├── stock-adjust-dialog.tsx
+│   │   │   ├── quick-adjust-dialog.tsx
+│   │   │   └── inventory-table.tsx
+│   │   ├── pages/
+│   │   │   └── dashboard.tsx
+│   │   ├── App.tsx
+│   │   └── index.css
+│   └── index.html
+├── server/                # Backend Express server
+│   ├── index.ts
+│   ├── routes.ts         # API endpoints
+│   ├── storage.ts        # In-memory data storage
+│   └── vite.ts
+├── shared/
+│   └── schema.ts         # Shared TypeScript types and Zod schemas
+└── design_guidelines.md  # Design system documentation
 ```
 
-**Storage Implementation**: Dual storage approach
-- Production: PostgreSQL database
-- Development fallback: In-memory storage (`MemStorage` class) with seed data
+## Features
 
-### External Dependencies
+### Dashboard
+- **Summary Cards**: Real-time metrics showing total items, low stock warnings, active categories, and recent updates
+- **Low Stock Alerts**: Dismissible banner highlighting items that need restocking
+- **Quick Actions Panel**: One-click access to add items, adjust stock, and export reports
 
-**Core Runtime Dependencies**:
-- `@neondatabase/serverless` - Neon PostgreSQL client
-- `drizzle-orm` - TypeScript ORM for database operations
-- `drizzle-kit` - Database migration and schema management tools
-- `express` - Web server framework
-- `vite` - Build tool and dev server
-- `react` & `react-dom` - UI framework
+### Inventory Management
+- **CRUD Operations**: Add, edit, and delete inventory items
+- **Stock Adjustments**: Quick adjust stock levels with visual feedback
+- **Search & Filter**: Real-time search and category-based filtering
+- **Responsive Table**: Desktop table view with mobile-optimized card layout
 
-**UI & Styling**:
-- `@radix-ui/*` packages - Accessible component primitives (20+ components)
-- `tailwindcss` - Utility-first CSS framework
-- `class-variance-authority` - Component variant styling
+### Categories Supported
+- Spirits
+- Beer
+- Wine
+- Mixers
+- Garnishes
+
+### Units Available
+- ml (milliliters)
+- L (liters)
+- bottles
+- cases
+- units
+
+## Architecture
+
+### Frontend
+- **Framework**: React 18 with Vite
+- **Routing**: Wouter for client-side routing
+- **State Management**: TanStack Query for server state
+- **UI Components**: Shadcn UI built on Radix UI primitives
+- **Styling**: Tailwind CSS with custom design system
+- **Forms**: React Hook Form with Zod validation
+- **Theme**: Dark/Light mode with system preference detection
+
+### Backend
+- **Server**: Express.js
+- **Storage**: In-memory storage (MemStorage)
+- **Validation**: Zod schemas for request validation
+- **API**: RESTful endpoints with proper error handling
+
+### Data Flow
+1. Frontend components use TanStack Query to fetch data
+2. Mutations trigger API requests to Express backend
+3. Backend validates requests with Zod schemas
+4. Storage layer handles CRUD operations
+5. Responses return updated data
+6. TanStack Query invalidates cache and refetches
+7. UI updates automatically with new data
+
+## API Endpoints
+
+### Inventory Items
+- `GET /api/inventory` - Fetch all inventory items
+- `GET /api/inventory/:id` - Fetch single item by ID
+- `POST /api/inventory` - Create new inventory item
+- `PUT /api/inventory/:id` - Update existing item
+- `DELETE /api/inventory/:id` - Delete item
+- `PATCH /api/inventory/:id/adjust` - Adjust stock quantity
+
+### Request/Response Examples
+
+**Create Item:**
+```json
+POST /api/inventory
+{
+  "name": "Jack Daniel's Tennessee Whiskey",
+  "category": "Spirits",
+  "quantity": 24,
+  "unit": "bottles",
+  "lowStockThreshold": 12
+}
+```
+
+**Adjust Stock:**
+```json
+PATCH /api/inventory/:id/adjust
+{
+  "adjustment": -5  // Decrease by 5
+}
+```
+
+## Design System
+
+The application follows a comprehensive design system documented in `design_guidelines.md`:
+
+- **Typography**: Inter font family with clear hierarchy
+- **Colors**: Dark mode optimized with high contrast
+- **Spacing**: Consistent using Tailwind units (4, 6, 8, 12)
+- **Components**: Shadcn UI for consistent, accessible components
+- **Interactions**: Subtle hover/active states using elevation system
+- **Responsive**: Mobile-first approach with breakpoints at 768px and 1024px
+
+## Recent Changes
+
+**November 15, 2024** - Initial Release
+- Implemented complete inventory management system
+- Added Quick Actions Panel with Add Item, Quick Adjust, and Export Report
+- Built responsive dashboard with summary cards and low stock alerts
+- Created comprehensive inventory table with search and filtering
+- Added dark/light theme support
+- Implemented all CRUD operations with validation
+- Completed end-to-end testing of all features
+
+## Development
+
+### Running the Application
+The application runs on port 5000 with both frontend and backend served together:
+```bash
+npm run dev
+```
+
+### Tech Stack
+- **Node.js**: Runtime environment
+- **TypeScript**: Type safety throughout
+- **React**: UI framework
+- **Express**: Backend server
+- **Vite**: Build tool and dev server
+- **Tailwind CSS**: Utility-first styling
+- **Zod**: Schema validation
+- **TanStack Query**: Data fetching and caching
+
+### Key Dependencies
+- `@tanstack/react-query` - Server state management
+- `wouter` - Client-side routing
+- `react-hook-form` - Form handling
+- `@hookform/resolvers` - Zod integration for forms
 - `lucide-react` - Icon library
+- `drizzle-orm` - Type-safe ORM (for future database integration)
+- `drizzle-zod` - Schema to Zod conversion
 
-**Form & Validation**:
-- `react-hook-form` - Form state management
-- `zod` - Schema validation
-- `@hookform/resolvers` - Integration between react-hook-form and zod
-- `drizzle-zod` - Generate Zod schemas from Drizzle tables
+## Testing
 
-**Developer Experience**:
-- `tsx` - TypeScript execution for development
-- `esbuild` - Production bundler for server code
-- `@replit/vite-plugin-*` - Replit-specific development tools (error overlay, cartographer, dev banner)
+The application has been thoroughly tested with end-to-end playwright tests covering:
+- Dashboard loading and display
+- Summary cards and metrics
+- Quick Actions Panel functionality
+- Add, edit, and delete operations
+- Stock adjustment workflows
+- Search and filter functionality
+- Theme switching
+- Mobile responsive behavior
 
-**Date Handling**:
-- `date-fns` - Date utility library
+## Future Enhancements
 
-**Session Storage**:
-- `connect-pg-simple` - PostgreSQL session store for Express
+Potential features for future iterations:
+- Persistent database storage (PostgreSQL integration ready)
+- User authentication and authorization
+- Multi-location inventory tracking
+- Barcode/QR code scanning
+- Advanced analytics and reporting
+- Supplier management
+- Automatic reorder suggestions
+- Historical usage tracking
+- Print-friendly reports
 
-**Build & Deployment**:
-- Scripts: `dev` (development), `build` (production), `start` (production server), `db:push` (schema migration)
-- Build outputs: Client to `dist/public`, Server to `dist/index.js`
-- Module format: ESM throughout
+## Notes
+
+- The application starts with 12 pre-seeded sample items for demonstration
+- Some items are intentionally set below low stock thresholds to demonstrate alerts
+- Default theme is dark mode, optimized for bar/restaurant environments
+- Export functionality generates CSV files with current inventory snapshot
+- All forms include comprehensive validation with helpful error messages
