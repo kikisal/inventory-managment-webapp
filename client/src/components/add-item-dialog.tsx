@@ -1,0 +1,220 @@
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { insertInventoryItemSchema, type InsertInventoryItem } from "@shared/schema";
+import { Plus } from "lucide-react";
+
+interface AddItemDialogProps {
+  onSubmit: (data: InsertInventoryItem) => Promise<void>;
+  isPending?: boolean;
+}
+
+const categories = ["Spirits", "Beer", "Wine", "Mixers", "Garnishes"] as const;
+const units = ["ml", "L", "bottles", "cases", "units"] as const;
+
+export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
+  const [open, setOpen] = useState(false);
+
+  const form = useForm<InsertInventoryItem>({
+    resolver: zodResolver(insertInventoryItemSchema),
+    defaultValues: {
+      name: "",
+      category: "Spirits",
+      quantity: 0,
+      unit: "bottles",
+      lowStockThreshold: 10,
+    },
+  });
+
+  const handleSubmit = async (data: InsertInventoryItem) => {
+    await onSubmit(data);
+    setOpen(false);
+    form.reset();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button data-testid="button-add-item" className="gap-2">
+          <Plus className="h-4 w-4" />
+          Add Item
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-semibold tracking-tight">
+            Add Inventory Item
+          </DialogTitle>
+          <DialogDescription>
+            Add a new item to your bar inventory. Fill in all the details below.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Item Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g., Jack Daniel's Whiskey"
+                      {...field}
+                      data-testid="input-item-name"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger data-testid="select-category">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unit</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger data-testid="select-unit">
+                          <SelectValue placeholder="Select unit" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {units.map((unit) => (
+                          <SelectItem key={unit} value={unit}>
+                            {unit}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        {...field}
+                        data-testid="input-quantity"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="lowStockThreshold"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Low Stock Alert</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="10"
+                        {...field}
+                        data-testid="input-threshold"
+                      />
+                    </FormControl>
+                    <FormDescription className="text-xs">
+                      Alert when below this
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={isPending}
+                data-testid="button-cancel"
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isPending} data-testid="button-submit">
+                {isPending ? "Adding..." : "Add Item"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}

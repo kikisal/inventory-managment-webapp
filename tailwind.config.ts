@@ -10,6 +10,11 @@ export default {
         md: ".375rem", /* 6px */
         sm: ".1875rem", /* 3px */
       },
+      letterSpacing: {
+        tight: '-0.02em',
+        normal: '0em',
+        wide: '0.05em',
+      },
       colors: {
         // Flat / base colors (regular buttons)
         background: "hsl(var(--background) / <alpha-value>)",
