@@ -24,10 +24,9 @@ export function LowStockAlert({ items }: LowStockAlertProps) {
       <AlertTriangle className="h-5 w-5 text-destructive" />
       <AlertDescription className="flex items-center justify-between gap-4">
         <div className="flex-1">
-          <span className="font-medium text-destructive">Low Stock Warning:</span>{" "}
+          <span className="font-medium text-destructive">Avviso Scorte Basse:</span>{" "}
           <span className="text-foreground">
-            {lowStockItems.length} item{lowStockItems.length !== 1 ? "s" : ""} need
-            restocking
+            {lowStockItems.length} prodott{lowStockItems.length !== 1 ? "i" : "o"} da riassortire
           </span>
           <span className="text-muted-foreground ml-2">
             ({lowStockItems.map((item) => item.name).join(", ")})

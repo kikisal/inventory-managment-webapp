@@ -63,7 +63,7 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
       <DialogTrigger asChild>
         <Button variant="secondary" data-testid="button-quick-adjust" className="gap-2">
           <TrendingUp className="h-4 w-4" />
-          Quick Adjust
+          Correzione Quantità
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[450px]">

@@ -63,16 +63,16 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
       <DialogTrigger asChild>
         <Button data-testid="button-add-item" className="gap-2">
           <Plus className="h-4 w-4" />
-          Add Item
+          Aggiungi Prodotto
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold tracking-tight">
-            Add Inventory Item
+            Aggiungi Prodotto
           </DialogTitle>
           <DialogDescription>
-            Add a new item to your bar inventory. Fill in all the details below.
+            Aggiungi un nuovo prodotto al tuo inventario. Riempi tutti i campi.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -82,10 +82,10 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Item Name</FormLabel>
+                  <FormLabel>Nome prodotto</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="e.g., Jack Daniel's Whiskey"
+                      placeholder="es. Whiskey Jack Daniels"
                       {...field}
                       data-testid="input-item-name"
                     />
@@ -101,7 +101,7 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Categoria</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -129,7 +129,7 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Unit</FormLabel>
+                    <FormLabel>Unità</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -159,7 +159,7 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
                 name="quantity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quantity</FormLabel>
+                    <FormLabel>Quantità</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -179,7 +179,7 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
                 name="lowStockThreshold"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Low Stock Alert</FormLabel>
+                    <FormLabel>Notifica di scorte basse</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -190,7 +190,7 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
                       />
                     </FormControl>
                     <FormDescription className="text-xs">
-                      Alert when below this
+                      Avvisami quando è sotto di questo valore
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -206,10 +206,10 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
                 disabled={isPending}
                 data-testid="button-cancel"
               >
-                Cancel
+                Annulla
               </Button>
               <Button type="submit" disabled={isPending} data-testid="button-submit">
-                {isPending ? "Adding..." : "Add Item"}
+                {isPending ? "Aggiungi Prodotto" : "Aggiungi Prodotto"}
               </Button>
             </div>
           </form>

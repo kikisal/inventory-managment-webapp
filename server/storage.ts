@@ -97,13 +97,6 @@ export class MemStorage implements IStorage {
         unit: "units",
         lowStockThreshold: 20,
       },
-      {
-        name: "Fresh Mint",
-        category: "Garnishes",
-        quantity: 3,
-        unit: "units",
-        lowStockThreshold: 5,
-      },
     ];
 
     sampleItems.forEach((item) => {

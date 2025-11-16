@@ -24,14 +24,14 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory"] });
       toast({
-        title: "Item added",
-        description: "The inventory item has been added successfully.",
+        title: "Prodotto aggiunto",
+        description: "Il prodotto è stato aggiunto con successo.",
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to add item. Please try again.",
+        title: "Errore",
+        description: "Il prodotto non è stato aggiunto. Perfavore riprova di nuovo.",
         variant: "destructive",
       });
     },
@@ -44,14 +44,14 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory"] });
       toast({
-        title: "Item updated",
-        description: "The inventory item has been updated successfully.",
+        title: "Prodotto aggiornato",
+        description: "Il prodotto è stato aggiornato con successo.",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to update item. Please try again.",
+        description: "Non è stato possibile aggiornare il prodotto. Perfavore riprovare.",
         variant: "destructive",
       });
     },
@@ -64,14 +64,14 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory"] });
       toast({
-        title: "Stock adjusted",
-        description: "The stock level has been updated successfully.",
+        title: "Stock aggiustato",
+        description: "Il livello di stock è stato aggiornato con successo.",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to adjust stock. Please try again.",
+        description: "Operazione di aggiornamento stock fallita. Perfavore riprovare.",
         variant: "destructive",
       });
     },
@@ -84,14 +84,14 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/inventory"] });
       toast({
-        title: "Item deleted",
-        description: "The inventory item has been removed.",
+        title: "Prodotto eliminato",
+        description: "Il prodotto è stato rimosso dall'inventario.",
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to delete item. Please try again.",
+        title: "Errore",
+        description: "Operazione di eliminazione di prodotto fallita. Perfavore riprovare.",
         variant: "destructive",
       });
     },
@@ -123,14 +123,14 @@ export default function Dashboard() {
     URL.revokeObjectURL(url);
 
     toast({
-      title: "Export complete",
-      description: "Your inventory has been exported to CSV.",
+      title: "Exportazione completata",
+      description: "Il tuo inventario è stato esportato in CSV.",
     });
   };
 
   const isPending =
-    addItemMutation.isPending ||
-    editItemMutation.isPending ||
+    addItemMutation.isPending     ||
+    editItemMutation.isPending    ||
     adjustStockMutation.isPending ||
     deleteItemMutation.isPending;
 
@@ -140,7 +140,7 @@ export default function Dashboard() {
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Monitor and manage your bar inventory
+            Monitora and gestisci l'inventario del bar
           </p>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default function Dashboard() {
       <LowStockAlert items={items} />
 
       <div className="rounded-lg border bg-card p-6">
-        <h2 className="text-lg font-semibold tracking-tight mb-4">Quick Actions</h2>
+        <h2 className="text-lg font-semibold tracking-tight mb-4">Azioni Rapide</h2>
         <div className="flex flex-wrap gap-4">
           <AddItemDialog
             onSubmit={async (data) => {
@@ -171,7 +171,7 @@ export default function Dashboard() {
             className="gap-2"
           >
             <Download className="h-4 w-4" />
-            Export Report
+            Esporta Prodotti
           </Button>
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function Dashboard() {
           <p className="text-sm text-muted-foreground mt-1">
             All items in your bar inventory
           </p>
-        </div>
+        </div> 
         <InventoryTable
           items={items}
           isLoading={isLoading}
