@@ -38,38 +38,31 @@ export function SummaryCards({ items, isLoading }: SummaryCardsProps) {
 
   const cards = [
     {
-      title: "Total Items",
+      title: "Prodotti totali",
       value: totalItems,
-      description: `${totalQuantity} total units`,
+      description: `${totalQuantity} unità totali`,
       icon: Package,
       testId: "card-total-items",
     },
     {
-      title: "Low Stock",
+      title: "Prodotti con Stock basso",
       value: lowStockItems,
-      description: lowStockItems === 0 ? "All items stocked" : "Items need attention",
+      description: lowStockItems === 0 ? "Inventario assortito" : "Alcuni prodotti devono essere riassortiti",
       icon: AlertTriangle,
       badge: lowStockItems > 0,
       testId: "card-low-stock",
     },
     {
-      title: "Categories",
+      title: "Categorie",
       value: categories,
-      description: "Active categories",
+      description: "Categorie attive",
       icon: Grid3x3,
       testId: "card-categories",
-    },
-    {
-      title: "Recent Updates",
-      value: totalItems > 0 ? "Today" : "None",
-      description: "Last inventory check",
-      icon: Clock,
-      testId: "card-recent-updates",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {cards.map((card) => {
         const Icon = card.icon;
         return (

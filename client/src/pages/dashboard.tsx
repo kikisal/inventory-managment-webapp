@@ -180,9 +180,9 @@ export default function Dashboard() {
 
       <div>
         <div className="mb-6">
-          <h2 className="text-xl font-semibold tracking-tight">Inventory</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Inventario</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            All items in your bar inventory
+            Tutti i prodotti nell'inventario del bar
           </p>
         </div> 
         <InventoryTable
