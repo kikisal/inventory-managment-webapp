@@ -6,7 +6,7 @@ import { type Server } from "http";
 
 const app = express();
 
-app.set("env", "development");
+// app.set("env", "development");
 
 declare module 'http' {
 	interface IncomingMessage {
