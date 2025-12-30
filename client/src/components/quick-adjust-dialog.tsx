@@ -166,7 +166,7 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
                     </div>
                     {newQuantity <= selectedItem.lowStockThreshold && (
                       <p className="text-xs text-destructive mt-2">
-                        Below low stock threshold ({selectedItem.lowStockThreshold})
+                        Sotto al livello minimo di stock ({selectedItem.lowStockThreshold})
                       </p>
                     )}
                   </div>

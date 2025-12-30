@@ -124,7 +124,7 @@ export function StockAdjustDialog({ item, onSubmit, isPending }: StockAdjustDial
               </div>
               {newQuantity <= item.lowStockThreshold && (
                 <p className="text-xs text-destructive mt-2">
-                  Below low stock threshold ({item.lowStockThreshold})
+                  Sotto al livello minimo di stock ({item.lowStockThreshold})
                 </p>
               )}
             </div>
