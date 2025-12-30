@@ -28,12 +28,13 @@ function App() {
               <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    <Package className="h-5 w-5" />
+                    {/* <Package className="h-5 w-5" /> */}
+                    <img src={window.location.href + 'bar-logo.jpg'}/>
                   </div>
                   <div>
-                    <h1 className="text-lg font-semibold tracking-tight">Bar Inventory</h1>
+                    <h1 className="text-lg font-semibold tracking-tight">Inventario del Bar</h1>
                     <p className="text-xs text-muted-foreground hidden sm:block">
-                      Management System
+                      Sistema di gestione inventario
                     </p>
                   </div>
                 </div>

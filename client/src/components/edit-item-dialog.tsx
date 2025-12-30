@@ -27,6 +27,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertInventoryItemSchema, type InsertInventoryItem, type InventoryItem } from "@shared/schema";
+import { PRODUCT_CATEGORIES, PRODUCT_UNITS } from "@shared/globals";
 
 interface EditItemDialogProps {
   item: InventoryItem | null;
@@ -36,8 +37,8 @@ interface EditItemDialogProps {
   isPending?: boolean;
 }
 
-const categories = ["Spirits", "Beer", "Wine", "Mixers", "Garnishes"] as const;
-const units = ["ml", "L", "bottles", "cases", "units"] as const;
+const categories = [...PRODUCT_CATEGORIES] as const;
+const units = [...PRODUCT_UNITS] as const;
 
 export function EditItemDialog({
   item,
@@ -50,9 +51,9 @@ export function EditItemDialog({
     resolver: zodResolver(insertInventoryItemSchema),
     defaultValues: {
       name: "",
-      category: "Spirits",
+      category: "Distillati",
       quantity: 0,
-      unit: "bottles",
+      unit: "bottiglie",
       lowStockThreshold: 10,
     },
   });
@@ -71,7 +72,7 @@ export function EditItemDialog({
 
   const handleSubmit = async (data: InsertInventoryItem) => {
     if (!item) return;
-    await onSubmit(item.id, data);
+    await onSubmit("" + item.id, data);
     onOpenChange(false);
   };
 
@@ -80,10 +81,10 @@ export function EditItemDialog({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold tracking-tight">
-            Edit Inventory Item
+            Modifica Prodotto
           </DialogTitle>
           <DialogDescription>
-            Update the details for this inventory item.
+            Aggiorna i dettagli di questo prodotto.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -93,7 +94,7 @@ export function EditItemDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Item Name</FormLabel>
+                  <FormLabel>Nome prodotto</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="e.g., Jack Daniel's Whiskey"
@@ -112,7 +113,7 @@ export function EditItemDialog({
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Categoria</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       value={field.value}
@@ -140,7 +141,7 @@ export function EditItemDialog({
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Unit</FormLabel>
+                    <FormLabel>Unità</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       value={field.value}
@@ -170,7 +171,7 @@ export function EditItemDialog({
                 name="quantity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quantity</FormLabel>
+                    <FormLabel>Quantità</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -190,7 +191,7 @@ export function EditItemDialog({
                 name="lowStockThreshold"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Low Stock Alert</FormLabel>
+                    <FormLabel>Avviso di basso stock</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -201,7 +202,7 @@ export function EditItemDialog({
                       />
                     </FormControl>
                     <FormDescription className="text-xs">
-                      Alert when below this
+                      Avvisima quando sotto di questo valore
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -217,10 +218,10 @@ export function EditItemDialog({
                 disabled={isPending}
                 data-testid="button-edit-cancel"
               >
-                Cancel
+                Annulla
               </Button>
               <Button type="submit" disabled={isPending} data-testid="button-edit-submit">
-                {isPending ? "Saving..." : "Save Changes"}
+                {isPending ? "Salvando..." : "Salva"}
               </Button>
             </div>
           </form>

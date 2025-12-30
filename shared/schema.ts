@@ -1,26 +1,27 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer } from "drizzle-orm/pg-core";
+import { mysqlTable, text, varchar, int } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { PRODUCT_CATEGORIES, PRODUCT_UNITS } from "./globals";
 
-export const inventoryItems = pgTable("inventory_items", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+export const inventoryItems = mysqlTable("inventory_items", {
+  id: int("id").primaryKey().autoincrement().notNull(),
   name: text("name").notNull(),
   category: text("category").notNull(),
-  quantity: integer("quantity").notNull().default(0),
+  quantity: int("quantity").notNull().default(0),
   unit: text("unit").notNull(),
-  lowStockThreshold: integer("low_stock_threshold").notNull().default(10),
+  lowStockThreshold: int("lowStockThreshold").notNull().default(10),
 });
 
 export const insertInventoryItemSchema = createInsertSchema(inventoryItems).omit({
   id: true,
 }).extend({
   name: z.string().min(1, "Item name is required"),
-  category: z.enum(["Spirits", "Beer", "Wine", "Mixers", "Garnishes"], {
+  category: z.enum([...PRODUCT_CATEGORIES], {
     errorMap: () => ({ message: "Please select a category" }),
   }),
   quantity: z.coerce.number().min(0, "Quantity must be at least 0"),
-  unit: z.enum(["ml", "L", "bottles", "cases", "units"], {
+  unit: z.enum([...PRODUCT_UNITS], {
     errorMap: () => ({ message: "Please select a unit" }),
   }),
   lowStockThreshold: z.coerce.number().min(0, "Threshold must be at least 0"),
@@ -32,5 +33,5 @@ export const adjustStockSchema = z.object({
 });
 
 export type InsertInventoryItem = z.infer<typeof insertInventoryItemSchema>;
-export type AdjustStock = z.infer<typeof adjustStockSchema>;
-export type InventoryItem = typeof inventoryItems.$inferSelect;
+export type AdjustStock         = z.infer<typeof adjustStockSchema>;
+export type InventoryItem       = typeof inventoryItems.$inferSelect;

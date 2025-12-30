@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Pencil, Trash2, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Pencil, Trash2, Search } from "lucide-react";
 import type { InventoryItem, AdjustStock, InsertInventoryItem } from "@shared/schema";
 import { StockAdjustDialog } from "./stock-adjust-dialog";
 import { EditItemDialog } from "./edit-item-dialog";
@@ -38,7 +38,6 @@ interface InventoryTableProps {
 }
 
 const categories = ["Tutti", ...PRODUCT_CATEGORIES] as const;
-const ITEMS_PER_PAGE = 10;
 
 export function InventoryTable({
   items,
@@ -50,7 +49,6 @@ export function InventoryTable({
 }: InventoryTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("Tutti");
-  const [currentPage, setCurrentPage] = useState(1);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
 
@@ -59,22 +57,6 @@ export function InventoryTable({
     const matchesCategory = selectedCategory === "Tutti" || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  // Pagination logic
-  const totalItems = filteredItems.length;
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-  const startItem = (currentPage - 1) * ITEMS_PER_PAGE + 1;
-  const endItem = Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
-
-  const paginatedItems = filteredItems.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
-  // Reset to page 1 when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedCategory]);
 
   const getStockStatus = (item: InventoryItem) => {
     if (item.quantity === 0) {
@@ -87,91 +69,6 @@ export function InventoryTable({
       return { label: "Moderate", variant: "secondary" as const };
     }
     return { label: "In Stock", variant: "default" as const };
-  };
-
-  const renderPagination = () => {
-    if (totalPages <= 1) return null;
-
-    const pageNumbers = [];
-    const maxVisiblePages = 5;
-
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbers.push(i);
-    }
-
-    return (
-      <div className="flex items-center justify-between mt-6">
-        <div className="text-sm text-muted-foreground">
-          Mostra {totalItems === 0 ? 0 : startItem}–{endItem} di {totalItems}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Precedente
-          </Button>
-
-          {startPage > 1 && (
-            <>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(1)}
-              >
-                1
-              </Button>
-              {startPage > 2 && <span className="px-2 text-muted-foreground">...</span>}
-            </>
-          )}
-
-          {pageNumbers.map((page) => (
-            <Button
-              key={page}
-              variant={currentPage === page ? "default" : "outline"}
-              size="sm"
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </Button>
-          ))}
-
-          {endPage < totalPages && (
-            <>
-              {endPage < totalPages - 1 && <span className="px-2 text-muted-foreground">...</span>}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(totalPages)}
-              >
-                {totalPages}
-              </Button>
-            </>
-          )}
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-          >
-            Successiva
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    );
   };
 
   if (isLoading) {
@@ -256,7 +153,7 @@ export function InventoryTable({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedItems.map((item) => {
+                    {filteredItems.map((item) => {
                       const status = getStockStatus(item);
                       return (
                         <TableRow key={item.id} data-testid={`row-item-${item.id}`}>
@@ -307,7 +204,7 @@ export function InventoryTable({
             </div>
 
             <div className="grid gap-4 md:hidden">
-              {paginatedItems.map((item) => {
+              {filteredItems.map((item) => {
                 const status = getStockStatus(item);
                 return (
                   <Card key={item.id} className="p-4" data-testid={`card-item-${item.id}`}>
@@ -363,8 +260,6 @@ export function InventoryTable({
                 );
               })}
             </div>
-
-            {renderPagination()}
           </>
         )}
       </div>

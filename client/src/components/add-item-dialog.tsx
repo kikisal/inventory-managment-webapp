@@ -29,14 +29,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertInventoryItemSchema, type InsertInventoryItem } from "@shared/schema";
 import { Plus } from "lucide-react";
+import { PRODUCT_CATEGORIES, PRODUCT_UNITS } from "@shared/globals";
 
 interface AddItemDialogProps {
   onSubmit: (data: InsertInventoryItem) => Promise<void>;
   isPending?: boolean;
 }
 
-const categories = ["Spirits", "Beer", "Wine", "Mixers", "Garnishes"] as const;
-const units = ["ml", "L", "bottles", "cases", "units"] as const;
+const categories = PRODUCT_CATEGORIES;
+const units = [...PRODUCT_UNITS] as const;
 
 export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
   const [open, setOpen] = useState(false);
@@ -45,9 +46,9 @@ export function AddItemDialog({ onSubmit, isPending }: AddItemDialogProps) {
     resolver: zodResolver(insertInventoryItemSchema),
     defaultValues: {
       name: "",
-      category: "Spirits",
+      category: "Distillati",
       quantity: 0,
-      unit: "bottles",
+      unit: "bottiglie",
       lowStockThreshold: 10,
     },
   });

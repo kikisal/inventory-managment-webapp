@@ -37,7 +37,7 @@ interface QuickAdjustDialogProps {
 
 export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDialogProps) {
   const [open, setOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState<string>("");
+  const [selectedItemId, setSelectedItemId] = useState<number>(-1);
 
   const form = useForm<AdjustStock>({
     resolver: zodResolver(adjustStockSchema),
@@ -51,7 +51,7 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
     await onSubmit(data);
     setOpen(false);
     form.reset();
-    setSelectedItemId("");
+    setSelectedItemId(-1);
   };
 
   const selectedItem = items.find((item) => item.id === selectedItemId);
@@ -69,21 +69,21 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
       <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold tracking-tight">
-            Quick Stock Adjustment
+            Correzione Rapida di Stock
           </DialogTitle>
           <DialogDescription>
-            Select an item and adjust its stock level quickly
+            Seleziona un prodotto e correggi il suo livello di stock
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium mb-2 block">Select Item</label>
+                <label className="text-sm font-medium mb-2 block">Seleziona Prodotto</label>
                 <Select
-                  value={selectedItemId}
+                  value={'' + selectedItemId}
                   onValueChange={(value) => {
-                    setSelectedItemId(value);
+                    setSelectedItemId(parseInt(value));
                     form.setValue("id", value);
                   }}
                 >
@@ -92,7 +92,7 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
                   </SelectTrigger>
                   <SelectContent>
                     {items.map((item) => (
-                      <SelectItem key={item.id} value={item.id}>
+                      <SelectItem key={item.id} value={'' + item.id}>
                         {item.name} ({item.quantity} {item.unit})
                       </SelectItem>
                     ))}
@@ -104,7 +104,7 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
                 <>
                   <div className="rounded-lg border bg-muted/50 p-4">
                     <div className="flex items-baseline justify-between">
-                      <span className="text-sm text-muted-foreground">Current Stock</span>
+                      <span className="text-sm text-muted-foreground">Stock Attuale</span>
                       <span className="text-2xl font-semibold">
                         {selectedItem.quantity}{" "}
                         <span className="text-sm text-muted-foreground">{selectedItem.unit}</span>
@@ -117,7 +117,7 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
                     name="adjustment"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Adjustment</FormLabel>
+                        <FormLabel>Correzione</FormLabel>
                         <div className="flex gap-2">
                           <Button
                             type="button"
@@ -154,7 +154,7 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
 
                   <div className="rounded-lg border bg-primary/5 p-4">
                     <div className="flex items-baseline justify-between">
-                      <span className="text-sm text-muted-foreground">New Stock Level</span>
+                      <span className="text-sm text-muted-foreground">Nuovo Livello di Stock</span>
                       <span
                         className={`text-2xl font-semibold ${
                           newQuantity <= selectedItem.lowStockThreshold ? "text-destructive" : ""
@@ -180,20 +180,20 @@ export function QuickAdjustDialog({ items, onSubmit, isPending }: QuickAdjustDia
                 variant="outline"
                 onClick={() => {
                   setOpen(false);
-                  setSelectedItemId("");
+                  setSelectedItemId(-1);
                   form.reset();
                 }}
                 disabled={isPending}
                 data-testid="button-quick-adjust-cancel"
               >
-                Cancel
+                Annulla
               </Button>
               <Button
                 type="submit"
                 disabled={isPending || !selectedItemId}
                 data-testid="button-quick-adjust-submit"
               >
-                {isPending ? "Updating..." : "Update Stock"}
+                {isPending ? "Aggiornando..." : "Aggiorna Stock"}
               </Button>
             </div>
           </form>

@@ -34,7 +34,7 @@ export function StockAdjustDialog({ item, onSubmit, isPending }: StockAdjustDial
   const form = useForm<AdjustStock>({
     resolver: zodResolver(adjustStockSchema),
     defaultValues: {
-      id: item.id,
+      id: '' + item.id,
       adjustment: 0,
     },
   });
@@ -58,17 +58,17 @@ export function StockAdjustDialog({ item, onSubmit, isPending }: StockAdjustDial
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold tracking-tight">
-            Quick Stock Adjustment
+            Correzione Rapida di Stock
           </DialogTitle>
           <DialogDescription>
-            Adjust stock for <span className="font-medium text-foreground">{item.name}</span>
+            Correggi stock per <span className="font-medium text-foreground">{item.name}</span>
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <div className="rounded-lg border bg-muted/50 p-4">
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-muted-foreground">Current Stock</span>
+                <span className="text-sm text-muted-foreground">Stock Attuale</span>
                 <span className="text-2xl font-semibold">
                   {item.quantity} <span className="text-sm text-muted-foreground">{item.unit}</span>
                 </span>
@@ -80,7 +80,7 @@ export function StockAdjustDialog({ item, onSubmit, isPending }: StockAdjustDial
               name="adjustment"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Adjustment</FormLabel>
+                  <FormLabel>Correzione</FormLabel>
                   <div className="flex gap-2">
                     <Button
                       type="button"
@@ -117,7 +117,7 @@ export function StockAdjustDialog({ item, onSubmit, isPending }: StockAdjustDial
 
             <div className="rounded-lg border bg-primary/5 p-4">
               <div className="flex items-baseline justify-between">
-                <span className="text-sm text-muted-foreground">New Stock Level</span>
+                <span className="text-sm text-muted-foreground">Nuovo Livello di Stock</span>
                 <span className={`text-2xl font-semibold ${newQuantity <= item.lowStockThreshold ? 'text-destructive' : ''}`}>
                   {newQuantity} <span className="text-sm text-muted-foreground">{item.unit}</span>
                 </span>
@@ -137,10 +137,10 @@ export function StockAdjustDialog({ item, onSubmit, isPending }: StockAdjustDial
                 disabled={isPending}
                 data-testid="button-adjust-cancel"
               >
-                Cancel
+                Annulla
               </Button>
               <Button type="submit" disabled={isPending} data-testid="button-adjust-submit">
-                {isPending ? "Updating..." : "Update Stock"}
+                {isPending ? "Aggiornando..." : "Aggiorna Stock"}
               </Button>
             </div>
           </form>
